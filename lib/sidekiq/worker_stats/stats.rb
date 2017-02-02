@@ -25,7 +25,7 @@ module Sidekiq
         @klass = worker.class
         @pid = ::Process.pid
         @jid = worker.jid
-        @args = msg["args"]
+        #@args = msg["args"]
         start
       end
 
@@ -45,13 +45,13 @@ module Sidekiq
       end
 
       def save
-        worker_key = "#{@klass}:#{@start_t}:#{@jid}"
+        #worker_key = "#{@klass}:#{@start_t}:#{@jid}"
         data = {
           pid: @pid,
           jid: @jid,
           queue: @queue,
           class: @klass,
-          args: @args,
+          #args: @args,
           start: @start_t,
           stop: @stop_t,
           walltime: @walltime,
@@ -60,10 +60,9 @@ module Sidekiq
         }
 
         Sidekiq.redis do |redis|
-          redis.hset ::Sidekiq::WorkerStats::REDIS_HASH, worker_key, JSON.generate(data)
+          redis.lpush ::Sidekiq::WorkerStats::REDIS_HASH, JSON.generate(data)
+          redis.ltrim ::Sidekiq::WorkerStats::REDIS_HASH, 0, 1000
         end
-
-        remove_old_samples
       end
 
       private

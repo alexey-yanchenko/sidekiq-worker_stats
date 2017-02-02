@@ -1,21 +1,7 @@
 <div class="worker_stats">
   <h2>Worker Stats</h2>
-  <h4>Showing results <%= @stats_length == 0 ? "0" : "#{(@page * @per_page) + 1}" %> to <%= "#{[(@page + 1) * @per_page, @stats_length].min}" %> (Total: <%= "#{@stats_length}" %>)</h4>
+
   <br>
-
-  <div style="height: 30px">
-    <% if @page > 0 %>
-      <div style="float: left;">
-        <a href="?page=<%= @page.to_s %>&per_page=<%= @per_page.to_s %>">Previous Page</a>
-      </div>
-    <% end %>
-
-    <% if @page < @max_pages %>
-      <div style="float: right;">
-        <a href="?page=<%= (@page + 2).to_s %>&per_page=<%= @per_page.to_s %>">Next Page</a>
-      </div>
-    <% end %>
-  </div>
 
   <div class="worker_stats__container">
     <div class="worker_stats__table">
@@ -31,13 +17,13 @@
         </thead>
 
         <tbody>
-          <% @workers_stats.each do |key, worker| %>
+          <% @workers_stats.each do |worker| %>
             <tr>
-              <td><a href="<%= root_path %>worker_stats/<%= key.to_s %>"><%= worker["class"].to_s %></a></td>
+              <td><%= worker["class"].to_s %></a></td>
               <td><%= worker["args"] != nil ? worker["args"].join(", ") : "--" %></td>
               <td><%= Time.at(worker["start"]).strftime "%Y-%m-%d %H:%M:%S" %></td>
-              <td><%= Time.at(worker["stop"]).strftime "%Y-%m-%d %H:%M:%S" %></td>
-              <td><%= "#{worker["walltime"].round(4)}" %></td>
+              <td><%= worker["stop"] != nil ? Time.at(worker["stop"]).strftime("%Y-%m-%d %H:%M:%S") : "--" %></td>
+              <td><%= "#{worker["walltime"].round(4)}" unless worker["walltime"].nil?  %></td>
               <td><%= "#{worker["mem"][worker["mem"].keys.min] / 1024 / 1024}" %></td>
               <td><%= "#{(worker["mem"].values.max / 1024 / 1024)}" %></td>
             </tr>
