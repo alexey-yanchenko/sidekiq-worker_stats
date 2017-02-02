@@ -40,7 +40,7 @@ module Sidekiq
         @walltime = @stop_t - @start_t
         @status = status
 
-        mem_thr.exit if mem_thr != nil
+        @mem_thr.exit if @mem_thr != nil
         @mem[::Time.now.to_f] = current_memory
       end
 
