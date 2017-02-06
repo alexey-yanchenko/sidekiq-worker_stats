@@ -51,7 +51,7 @@ module Sidekiq
           jid: @jid,
           queue: @queue,
           class: @klass,
-          #args: @args,
+          processor: identity,
           start: @start_t,
           stop: @stop_t,
           walltime: @walltime,
@@ -66,6 +66,14 @@ module Sidekiq
       end
 
       private
+
+      def hostname
+        Socket.gethostname
+      end
+
+      def identity
+        @@identity ||= "#{hostname}:#{$$}"
+      end
 
       def memory_measurement
         @mem = {}
