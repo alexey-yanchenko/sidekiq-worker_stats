@@ -1,7 +1,10 @@
 <div class="worker_stats">
-  <h2>Worker Stats</h2>
-
-  <br>
+  <div class="col-sm-6">
+    <h2>Worker Stats</h2>
+  </div>
+  <div class="col-sm-6 pull-right">
+    <%= erb :_paging, :locals => { :url => "#{root_path}worker_stats" } %>
+	</div>
 
   <div class="worker_stats__container">
     <div class="worker_stats__table">
@@ -13,18 +16,24 @@
           <th>Finished at</th>
           <th>Runtime (s)</th>
           <th>Start Memory (Mb)</th>
+          <th>End Memory (Mb)</th>
           <th>Peak Memory (Mb)</th>
         </thead>
 
         <tbody>
           <% @workers_stats.each do |worker| %>
+            <% start_mem = worker["mem"][worker["mem"].keys.min] %>
+            <% end_mem = worker["mem"][worker["mem"].keys.max] %>
             <tr>
               <td><%= worker["class"].to_s %></a></td>
               <td><%= worker["processor"].to_s %></td>
               <td><%= Time.at(worker["start"]).strftime "%Y-%m-%d %H:%M:%S" %></td>
               <td><%= worker["stop"] != nil ? Time.at(worker["stop"]).strftime("%Y-%m-%d %H:%M:%S") : "--" %></td>
               <td><%= "#{worker["walltime"].round(4)}" unless worker["walltime"].nil?  %></td>
-              <td><%= "#{worker["mem"][worker["mem"].keys.min] / 1024 / 1024}" %></td>
+              <td><%= "#{start_mem / 1024 / 1024}" %></td>
+              <td style="<%= end_mem > start_mem ? 'color: red;' : '' %>">
+                <%= "#{end_mem / 1024 / 1024}" %>
+              </td>
               <td><%= "#{(worker["mem"].values.max / 1024 / 1024)}" %></td>
             </tr>
           <% end %>
@@ -34,4 +43,7 @@
 
     </div>
   </div>
+  <div class="col-sm-6 pull-right">
+    <%= erb :_paging, :locals => { :url => "#{root_path}worker_stats" } %>
+	</div>
 </div>

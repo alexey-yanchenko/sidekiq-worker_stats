@@ -11,10 +11,11 @@ module Sidekiq
 
         app.get '/worker_stats' do
 
-          @per_page = params["per_page"].to_i || 10
-          @per_page = @per_page >= 1 ? @per_page : 10
+          @count = params["per_page"].to_i || 10
+          @count = @count >= 1 ? @count : 10
 
-          (@current_page, @total_size, @workers_stats ) = page(REDIS_HASH, params['page'], @per_page)
+
+          (@current_page, @total_size, @workers_stats ) = page(REDIS_HASH, params['page'], @count)
 					@workers_stats = @workers_stats.map { |msg| JSON.parse(msg) }
 
           render(:erb, File.read(File.join(view_path, 'worker_stats.erb')))
