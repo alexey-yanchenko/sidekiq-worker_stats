@@ -17,7 +17,6 @@
           <th>Runtime (s)</th>
           <th>Start Memory (Mb)</th>
           <th>End Memory (Mb)</th>
-          <th>Peak Memory (Mb)</th>
         </thead>
 
         <tbody>
@@ -34,7 +33,6 @@
               <td style="<%= end_mem > start_mem ? 'color: red;' : '' %>">
                 <%= "#{end_mem / 1024 / 1024}" %>
               </td>
-              <td><%= "#{(worker["mem"].values.max / 1024 / 1024)}" %></td>
             </tr>
           <% end %>
         </tbody>

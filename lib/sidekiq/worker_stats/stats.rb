@@ -32,15 +32,13 @@ module Sidekiq
       def start
         @status = 'started'
         @start_t = ::Time.now.to_f
-        memory_measurement
+        @mem[::Time.now.to_f] = current_memory
       end
 
       def stop(status)
         @stop_t = ::Time.now.to_f
         @walltime = @stop_t - @start_t
         @status = status
-
-        @mem_thr.exit if @mem_thr != nil
         @mem[::Time.now.to_f] = current_memory
       end
 
@@ -73,17 +71,6 @@ module Sidekiq
 
       def identity
         @@identity ||= "#{hostname}:#{$$}"
-      end
-
-      def memory_measurement
-        @mem = {}
-        mem_sleep = @config.mem_sleep
-        @mem_thr = ::Thread.new do
-          while true do
-            @mem[::Time.now.to_f] = current_memory
-            sleep mem_sleep
-          end
-        end
       end
 
       def current_memory
