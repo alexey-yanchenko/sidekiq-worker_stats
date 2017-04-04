@@ -25,6 +25,7 @@ module Sidekiq
         @klass = worker.class
         @pid = ::Process.pid
         @jid = worker.jid
+        @mem = {}
         #@args = msg["args"]
         start
       end
